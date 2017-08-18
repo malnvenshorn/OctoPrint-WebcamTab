@@ -8,21 +8,64 @@ $(function() {
     function WebcamTabViewModel(parameters) {
         var self = this;
 
-        // assign the injected parameters, e.g.:
-        // self.loginStateViewModel = parameters[0];
-        // self.settingsViewModel = parameters[1];
+        self.control = parameters[0];
 
-        // TODO: Implement your plugin's view model here.
-    }
+        self.control.onTabChange = function (current, previous) {
+            // replaced #control with #tab_plugin_webcamtab
+            if (current == "#tab_plugin_webcamtab") {
+                self.control._enableWebcam();
+            } else if (previous == "#tab_plugin_webcamtab") {
+                self.control._disableWebcam();
+            }
+        };
 
-    // view model class, parameters for constructor, container to bind to
-    OCTOPRINT_VIEWMODELS.push([
-        WebcamTabViewModel,
+        self.control._enableWebcam = function() {
+            // replaced #control with #tab_plugin_webcamtab
+            if (OctoPrint.coreui.selectedTab != "#tab_plugin_webcamtab" || !OctoPrint.coreui.browserTabVisible) {
+                return;
+            }
 
-        // e.g. loginStateViewModel, settingsViewModel, ...
-        [ /* "loginStateViewModel", "settingsViewModel" */ ],
+            if (self.control.webcamDisableTimeout != undefined) {
+                clearTimeout(self.control.webcamDisableTimeout);
+            }
+            var webcamImage = $("#webcam_image");
+            var currentSrc = webcamImage.attr("src");
 
-        // e.g. #settings_plugin_webcamtab, #tab_plugin_webcamtab, ...
-        [ /* ... */ ]
-    ]);
+            // safari bug doesn't release the mjpeg stream, so we just set it up the once
+            if (self.control._isSafari() && currentSrc != undefined) {
+                return;
+            }
+
+            var newSrc = self.control.settings.webcam_streamUrl();
+            if (currentSrc != newSrc) {
+                if (newSrc.lastIndexOf("?") > -1) {
+                    newSrc += "&";
+                } else {
+                    newSrc += "?";
+                }
+                newSrc += new Date().getTime();
+
+                self.control.webcamLoaded(false);
+                self.control.webcamError(false);
+                webcamImage.attr("src", newSrc);
+            }
+        };
+
+        self.onStartup = function() {
+            var container = $("#control #webcam_container");
+            if (container.length) {
+                var hint = container.next();
+                if (hint.attr("data-bind") === "visible: keycontrolPossible") {
+                    hint.remove();
+                }
+                container.remove();
+            }
+        };
+    };
+
+    OCTOPRINT_VIEWMODELS.push({
+        construct: WebcamTabViewModel,
+        dependencies: ["controlViewModel"],
+        elements: ["#tab_plugin_webcamtab"]
+    });
 });

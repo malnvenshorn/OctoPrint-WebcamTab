@@ -8,14 +8,8 @@ __copyright__ = "Copyright (C) 2017 Sven Lohrmann - Released under terms of the 
 import octoprint.plugin
 
 
-class WebcamTabPlugin(octoprint.plugin.SettingsPlugin,
-                      octoprint.plugin.AssetPlugin,
+class WebcamTabPlugin(octoprint.plugin.AssetPlugin,
                       octoprint.plugin.TemplatePlugin):
-
-    # SettingsPlugin mixin
-
-    def get_settings_defaults(self):
-        return dict()
 
     # AssetPlugin mixin
 
@@ -23,6 +17,13 @@ class WebcamTabPlugin(octoprint.plugin.SettingsPlugin,
         return dict(
             js=["js/webcamtab.js"]
         )
+
+    # TemplatePlugin
+
+    def get_template_configs(self):
+        return [
+            dict(type="tab", name="Webcam")
+        ]
 
     # Softwareupdate hook
 
