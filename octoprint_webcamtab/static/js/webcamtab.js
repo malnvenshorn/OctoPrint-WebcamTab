@@ -32,7 +32,7 @@ $(function() {
             var currentSrc = webcamImage.attr("src");
 
             // safari bug doesn't release the mjpeg stream, so we just set it up the once
-            if (self.control._isSafari() && currentSrc != undefined) {
+            if (OctoPrint.coreui.browser.safari && currentSrc != undefined) {
                 return;
             }
 
