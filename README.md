@@ -1,6 +1,6 @@
 # OctoPrint-WebcamTab
 
-This OctoPrint plugin moves the webcam stream from the controls into its own tab. Keyboard control is still possible.
+This OctoPrint plugin moves the webcam stream from the controls into its own tab. Keyboard control is still possible and it is compatible to the [FullScreen Plugin](https://github.com/BillyBlaze/OctoPrint-FullScreen).
 
 ## Setup
 
