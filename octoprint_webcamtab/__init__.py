@@ -22,7 +22,7 @@ class WebcamTabPlugin(octoprint.plugin.AssetPlugin,
 
     def get_template_configs(self):
         return [
-            dict(type="tab", name="Webcam")
+            dict(type="tab", name="Webcam", template=None)
         ]
 
     # Softwareupdate hook

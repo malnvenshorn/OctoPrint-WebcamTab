@@ -51,14 +51,15 @@ $(function() {
             }
         };
 
-        self.onStartup = function() {
-            var container = $("#control #webcam_container");
-            if (container.length) {
-                var hint = container.next();
-                if (hint.attr("data-bind") === "visible: keycontrolPossible") {
-                    hint.remove();
+        self.onAfterBinding = function() {
+            var tab = $("#tab_plugin_webcamtab");
+            var webcam = $("#webcam_container");
+            if (webcam) {
+                var hint = webcam.next();
+                tab.append(webcam.detach());
+                if (hint && hint.attr("data-bind") === "visible: keycontrolPossible") {
+                    tab.append(hint.detach());
                 }
-                container.remove();
             }
         };
     };
