@@ -46,6 +46,7 @@ class WebcamTabPlugin(octoprint.plugin.AssetPlugin,
 
 
 __plugin_name__ = "Webcam Tab"
+__plugin_pythoncompat__ = ">=2.7,<4"
 
 
 def __plugin_load__():
