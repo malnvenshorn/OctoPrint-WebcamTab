@@ -40,6 +40,7 @@ class WebcamTabPlugin(
 
 __plugin_name__ = "Webcam Tab"
 
+__plugin_pythoncompat__ = ">=3.7"
 
 __plugin_implementation__ = WebcamTabPlugin()
 
