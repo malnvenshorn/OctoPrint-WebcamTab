@@ -1,72 +1,52 @@
-/*
- * View model for OctoPrint-WebcamTab
- *
- * Author: Sven Lohrmann
- * License: AGPLv3
- */
-$(function() {
-    function WebcamTabViewModel(parameters) {
-        var self = this;
+class WebcamTabPlugin {
+    /* eslint-disable no-underscore-dangle */
 
-        self.control = parameters[0];
+    constructor(dependencies) {
+        [this.control] = dependencies;
+        this.control.onTabChange = this.onTabChangeOverride();
+        this.control._enableWebcam = this.enableWebcamOverride();
+    }
 
-        self.control.onTabChange = function (current, previous) {
-            // replaced #control with #tab_plugin_webcamtab
-            if (current == "#tab_plugin_webcamtab") {
-                self.control._enableWebcam();
-            } else if (previous == "#tab_plugin_webcamtab") {
-                self.control._disableWebcam();
+    onTabChangeOverride() {
+        return (current, previous) => {
+            if (current === '#tab_plugin_webcamtab') {
+                this.control._enableWebcam();
+            } else if (previous === '#tab_plugin_webcamtab') {
+                this.control._disableWebcam();
             }
         };
+    }
 
-        self.control._enableWebcam = function() {
-            // replaced #control with #tab_plugin_webcamtab
-            if (OctoPrint.coreui.selectedTab != "#tab_plugin_webcamtab" || !OctoPrint.coreui.browserTabVisible) {
+    enableWebcamOverride() {
+        const originalEnableWebcam = this.control._enableWebcam;
+
+        return () => {
+            if (OctoPrint.coreui.selectedTab !== '#tab_plugin_webcamtab' || !OctoPrint.coreui.browserTabVisible) {
                 return;
             }
 
-            if (self.control.webcamDisableTimeout != undefined) {
-                clearTimeout(self.control.webcamDisableTimeout);
-            }
-            var webcamImage = $("#webcam_image");
-            var currentSrc = webcamImage.attr("src");
-
-            // safari bug doesn't release the mjpeg stream, so we just set it up the once
-            if (OctoPrint.coreui.browser.safari && currentSrc != undefined) {
-                return;
-            }
-
-            var newSrc = self.control.settings.webcam_streamUrl();
-            if (currentSrc != newSrc) {
-                if (newSrc.lastIndexOf("?") > -1) {
-                    newSrc += "&";
-                } else {
-                    newSrc += "?";
-                }
-                newSrc += new Date().getTime();
-
-                self.control.webcamLoaded(false);
-                self.control.webcamError(false);
-                webcamImage.attr("src", newSrc);
-            }
+            OctoPrint.coreui.selectedTab = '#control';
+            originalEnableWebcam();
+            OctoPrint.coreui.selectedTab = '#tab_plugin_webcamtab';
         };
+    }
 
-        self.onAfterBinding = function() {
-            var tab = $("#tab_plugin_webcamtab");
-            var webcam = $("#webcam_container");
-            if (webcam) {
-                var hint = webcam.next();
-                tab.append(webcam.detach());
-                if (hint && hint.attr("data-bind") === "visible: keycontrolPossible") {
-                    tab.append(hint.detach());
-                }
+    /* eslint-disable-next-line class-methods-use-this */
+    onAllBound() {
+        const webcamTab = document.getElementById('tab_plugin_webcamtab');
+        const webcamContainer = document.getElementById('webcam_container');
+        if (webcamContainer) {
+            const hintText = webcamContainer.nextElementSibling;
+            webcamTab.appendChild(webcamContainer);
+            if (hintText && hintText.getAttribute('data-bind')?.includes('keycontrolPossible')) {
+                webcamTab.appendChild(hintText);
             }
-        };
-    };
+        }
+    }
+}
 
-    OCTOPRINT_VIEWMODELS.push({
-        construct: WebcamTabViewModel,
-        dependencies: ["controlViewModel"],
-        elements: ["#tab_plugin_webcamtab"]
-    });
+OCTOPRINT_VIEWMODELS.push({
+    construct: WebcamTabPlugin,
+    dependencies: ['controlViewModel'],
+    elements: ['#tab_plugin_webcamtab'],
 });
