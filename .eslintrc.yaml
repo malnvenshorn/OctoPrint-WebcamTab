@@ -1,0 +1,28 @@
+extends: "airbnb-base"
+ignorePatterns:
+  - "dist/"
+parserOptions:
+  ecmaVersion: 2020
+env:
+  browser: true
+globals:
+  # Knockout
+  ko: true
+  # Babel
+  gettext: true
+  ngettext: true
+  # OctoPrint
+  OctoPrint: true
+  OCTOPRINT_VIEWMODELS: true
+rules:
+  indent:
+    - error
+    - 4
+  max-len:
+    - error
+    - code: 120
+      # Broken strings are painful to work with and make code less searchable
+      ignoreUrls: true
+      ignoreRegExpLiterals: true
+      ignoreStrings: true
+      ignoreTemplateLiterals: true

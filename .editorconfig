@@ -1,0 +1,20 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+[*.{js,py}]
+max_line_length = 120
+
+[*.{cson,json,yaml,css,less,jinja2}]
+indent_size = 2
+
+# Minified JavaScript and CSS files shouldn't be changed
+[*.min.{js,css}]
+indent_style = unset
+insert_final_newline = unset
