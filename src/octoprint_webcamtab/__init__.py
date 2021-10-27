@@ -22,7 +22,7 @@ class WebcamTabPlugin(
 
     def get_update_information(self):
         return {
-            self._indentifier: dict(
+            self._identifier: dict(
                 displayName=self._plugin_name,
                 displayVersion=self._plugin_version,
 
